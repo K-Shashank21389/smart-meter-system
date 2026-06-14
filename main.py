@@ -485,14 +485,11 @@ def send_otp_api(data: OTPRequest):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        """
+    cursor.execute("""
         SELECT mobile
         FROM consumer
         WHERE meter_no=%s
-        """,
-        (data.meter_no,)
-    )
+    """, (data.meter_no,))
 
     row = cursor.fetchone()
 
@@ -501,7 +498,7 @@ def send_otp_api(data: OTPRequest):
     if not row:
         return {"error": "Meter not found"}
 
-    mobile = "+91" + str(row[0])
+    mobile = str(row[0])
 
     status = send_otp(mobile)
 
@@ -531,7 +528,7 @@ def verify_otp_api(data: OTPVerify):
     if not row:
         return {"login": "failed"}
 
-    mobile = "+91" + str(row[0])
+    mobile = str(row[0])
 
     status = verify_otp(
         mobile,
