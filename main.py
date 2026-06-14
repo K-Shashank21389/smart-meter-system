@@ -502,6 +502,8 @@ def send_otp_api(data: OTPRequest):
 
     status = send_otp(mobile)
 
+    print("MOBILE FROM DB =", mobile)
+
     return {
         "status": status
     }

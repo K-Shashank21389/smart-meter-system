@@ -1,4 +1,4 @@
-# check_tables.py
+# check_mobile.py
 
 from db import get_connection
 
@@ -6,9 +6,8 @@ conn = get_connection()
 cursor = conn.cursor()
 
 cursor.execute("""
-SELECT table_name
-FROM information_schema.tables
-WHERE table_schema='public'
+SELECT meter_no,mobile
+FROM consumer
 """)
 
 print(cursor.fetchall())
