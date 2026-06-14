@@ -911,3 +911,50 @@ def usage_history(meter_no: str):
 
     return rows
 
+@app.get("/init-db")
+def init_db():
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS consumer(
+        previous_reading INTEGER,
+        meter_no VARCHAR(20) PRIMARY KEY,
+        name VARCHAR(100),
+        mobile VARCHAR(20),
+        email VARCHAR(100)
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS bills(
+        id SERIAL PRIMARY KEY,
+        meter_no VARCHAR(20),
+        bill_amount FLOAT,
+        units INTEGER,
+        status VARCHAR(20)
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS usage_history(
+        id SERIAL PRIMARY KEY,
+        meter_no VARCHAR(20),
+        units INTEGER,
+        reading_date TIMESTAMP
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS otp_store(
+        meter_no VARCHAR(20),
+        otp VARCHAR(10),
+        created_at TIMESTAMP
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+
+    return {"status": "success"}

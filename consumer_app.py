@@ -1,26 +1,24 @@
 import streamlit as st
 import requests
-
 import pandas as pd
 import plotly.express as px
 
-st.set_page_config(
-    page_title="Consumer Portal"
-)
+API_URL = "https://smart-meter-system.onrender.com"
+
+st.set_page_config(page_title="Consumer Portal")
 
 st.title("⚡ Consumer Portal")
 
-meter_no = st.text_input(
-    "Meter Number"
-)
+meter_no = st.text_input("Meter Number")
 
 if "token" not in st.session_state:
     st.session_state.token = None
 
+# Send OTP
 if st.button("Send OTP"):
 
     response = requests.post(
-        "http://127.0.0.1:8000/send-otp",
+        f"{API_URL}/send-otp",
         json={
             "meter_no": meter_no
         }
@@ -28,32 +26,25 @@ if st.button("Send OTP"):
 
     st.success("OTP Sent")
 
-otp = st.text_input(
-    "Enter OTP"
-)
+otp = st.text_input("Enter OTP")
 
+# Verify OTP
 if st.button("Verify OTP"):
 
     response = requests.post(
-        "http://127.0.0.1:8000/verify-otp",
+        f"{API_URL}/verify-otp",
         json={
             "meter_no": meter_no,
             "otp": otp
         }
     )
 
-
-
     data = response.json()
 
     if data.get("login") == "success":
-
         st.session_state.token = data["token"]
-
         st.success("Login Successful")
-
     else:
-
         st.error("Invalid OTP")
 
 if st.session_state.token:
@@ -61,14 +52,14 @@ if st.session_state.token:
     st.subheader("Bill History")
 
     response = requests.get(
-        f"http://127.0.0.1:8000/consumer-bills/{meter_no}",
+        f"{API_URL}/consumer-bills/{meter_no}",
         headers={
             "token": st.session_state.token
         }
     )
 
     latest = requests.get(
-        f"http://127.0.0.1:8000/latest-bill/{meter_no}",
+        f"{API_URL}/latest-bill/{meter_no}",
         headers={
             "token": st.session_state.token
         }
@@ -80,22 +71,9 @@ if st.session_state.token:
 
     col1, col2, col3 = st.columns(3)
 
-    col1.metric(
-        "Units",
-        bill["units"]
-    )
-
-    col2.metric(
-        "Amount ₹",
-        bill["bill_amount"]
-    )
-
-    col3.metric(
-        "Status",
-        bill["status"]
-    )
-
-    import pandas as pd
+    col1.metric("Units", bill["units"])
+    col2.metric("Amount ₹", bill["bill_amount"])
+    col3.metric("Status", bill["status"])
 
     df = pd.DataFrame(
         response.json(),
@@ -107,16 +85,14 @@ if st.session_state.token:
         ]
     )
 
-    st.dataframe(
-        df,
-        use_container_width=True
-    )
+    st.dataframe(df, use_container_width=True)
 
     st.subheader("Pay Latest Bill")
 
     if st.button("Pay Bill"):
+
         response = requests.post(
-            "http://127.0.0.1:8000/pay-bill",
+            f"{API_URL}/pay-bill",
             json={
                 "meter_no": meter_no
             },
@@ -131,10 +107,8 @@ if st.session_state.token:
 
     if st.button("Get PDF"):
 
-        st.write("Meter Number:", meter_no)
-
         response = requests.get(
-            f"http://127.0.0.1:8000/bill/{meter_no}",
+            f"{API_URL}/bill/{meter_no}",
             headers={
                 "token": st.session_state.token
             }
@@ -155,13 +129,14 @@ if st.session_state.token:
             st.write(response.text)
 
     history = requests.get(
-        f"http://127.0.0.1:8000/usage-history/{meter_no}",
+        f"{API_URL}/usage-history/{meter_no}",
         headers={
             "token": st.session_state.token
         }
     )
 
     if history.status_code == 200:
+
         df = pd.DataFrame(
             history.json(),
             columns=[
