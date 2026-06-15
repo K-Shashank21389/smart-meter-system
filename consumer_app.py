@@ -67,13 +67,22 @@ if st.session_state.token:
 
     bill = latest.json()
 
+    st.write("Latest Bill Response:")
+    st.json(bill)
+
     st.subheader("Current Bill")
 
-    col1, col2, col3 = st.columns(3)
+    if "units" in bill:
 
-    col1.metric("Units", bill["units"])
-    col2.metric("Amount ₹", bill["bill_amount"])
-    col3.metric("Status", bill["status"])
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric("Units", bill.get("units"))
+        col2.metric("Amount ₹", bill.get("bill_amount"))
+        col3.metric("Status", bill.get("status"))
+
+    else:
+
+        st.error("Latest bill data not found")
 
     df = pd.DataFrame(
         response.json(),
