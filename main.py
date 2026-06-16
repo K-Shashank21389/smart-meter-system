@@ -1059,17 +1059,37 @@ from email_service import send_bill_email
 @app.get("/test-email")
 async def test_email():
 
+    pdf_file = generate_pdf(
+        "240069381738",
+        "Test User",
+        100,
+        250
+    )
+
     try:
 
         await send_bill_email(
             email="yourgmail@gmail.com",
             meter_no="240069381738",
-            amount=100,
-            pdf_file="240069381738_bill.pdf"
+            amount=250,
+            pdf_file=generate_pdf(
+                "240069381738",
+                "Test User",
+                100,
+                250
+            )
         )
 
-        return {"status": "success"}
+        print("PDF FILE =", pdf_file)
+        print("TYPE =", type(pdf_file))
+
+        return {
+            "status": "success",
+            "pdf": pdf_file
+        }
 
     except Exception as e:
 
-        return {"error": str(e)}
+        return {
+            "error": str(e)
+        }
