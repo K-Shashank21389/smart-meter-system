@@ -348,8 +348,9 @@ def get_bill(
     )
 
 
-@app.get("/bills")
-def get_bills(
+@app.get("/bill/{meter_no}")
+def get_bill(
+    meter_no: str,
     token: str = Header(...)
 ):
 
@@ -359,22 +360,40 @@ def get_bills(
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT *
-    FROM bills
-    ORDER BY id DESC
-    """)
+        SELECT c.name,
+               b.units,
+               b.bill_amount
+        FROM bills b
+        JOIN consumer c
+        ON c.meter_no = b.meter_no
+        WHERE b.meter_no=%s
+        ORDER BY b.id DESC
+        LIMIT 1
+    """, (meter_no,))
 
-    rows = cursor.fetchall()
+    row = cursor.fetchone()
 
     conn.close()
 
-    return rows
+    if not row:
+        return {"error": "Bill not found"}
 
+    name = row[0]
+    units = row[1]
+    amount = row[2]
 
+    pdf_file = generate_pdf(
+        meter_no,
+        name,
+        units,
+        amount
+    )
 
-class PaymentRequest(BaseModel):
-
-    meter_no: str
+    return FileResponse(
+        pdf_file,
+        media_type="application/pdf",
+        filename=pdf_file
+    )
 
 
 @app.post("/pay-bill")
