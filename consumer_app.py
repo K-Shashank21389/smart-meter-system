@@ -163,6 +163,8 @@ if st.session_state.token:
         st.subheader("Usage Data")
         st.write(df)
 
+        df = df.groupby("Date", as_index=False)["Units"].sum()
+
         fig = px.line(
             df,
             x="Date",

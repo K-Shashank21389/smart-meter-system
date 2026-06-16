@@ -1053,3 +1053,17 @@ def download_qr(filename: str):
         media_type="image/png",
         filename=filename
     )
+
+from email_service import send_bill_email
+
+@app.get("/test-email")
+async def test_email():
+
+    await send_bill_email(
+        email="shashankkunduru13@gmail.com",
+        meter_no="240069381738",
+        amount=100,
+        pdf_file="240069381738_bill.pdf"
+    )
+
+    return {"status": "email sent"}
