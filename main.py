@@ -1059,11 +1059,17 @@ from email_service import send_bill_email
 @app.get("/test-email")
 async def test_email():
 
-    await send_bill_email(
-        email="shashankkunduru49@gmail.com",
-        meter_no="240069381738",
-        amount=100,
-        pdf_file="240069381738_bill.pdf"
-    )
+    try:
 
-    return {"status": "email sent"}
+        await send_bill_email(
+            email="yourgmail@gmail.com",
+            meter_no="240069381738",
+            amount=100,
+            pdf_file="240069381738_bill.pdf"
+        )
+
+        return {"status": "success"}
+
+    except Exception as e:
+
+        return {"error": str(e)}
