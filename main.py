@@ -400,6 +400,15 @@ def get_bill(
         filename=pdf_file
     )
 
+class OTPVerify(BaseModel):
+    meter_no: str
+    otp: str
+
+
+class PaymentRequest(BaseModel):
+    meter_no: str
+
+
 
 @app.post("/pay-bill")
 def pay_bill(
