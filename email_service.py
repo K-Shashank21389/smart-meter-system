@@ -1,49 +1,41 @@
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+import requests
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
-    MAIL_FROM=os.getenv("MAIL_FROM"),
-
-    MAIL_SERVER="smtp-relay.brevo.com",
-    MAIL_PORT=465,
-
-    MAIL_STARTTLS=False,
-    MAIL_SSL_TLS=True,
-
-    USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True
-)
-
-
 
 async def send_bill_email(
     email,
     meter_no,
-    amount,
-    pdf_file
+    amount
 ):
-    print("MAIL_USERNAME =", os.getenv("MAIL_USERNAME"))
-    print("MAIL_FROM =", os.getenv("MAIL_FROM"))
-    print("PDF FILE =", pdf_file)
+    headers = {
+        "accept": "application/json",
+        "api-key": os.getenv("BREVO_API_KEY"),
+        "content-type": "application/json"
+    }
 
-    message = MessageSchema(
-        subject="Electricity Bill",
-        recipients=[email],
-        body=f"""
-Dear Consumer,
+    payload = {
+        "sender": {
+            "email": os.getenv("MAIL_FROM")
+        },
+        "to": [
+            {
+                "email": email
+            }
+        ],
+        "subject": "Electricity Bill",
+        "htmlContent": f"""
+        <h2>Electricity Bill</h2>
 
-Meter Number: {meter_no}
-Amount: ₹{amount}
-""",
-        subtype="plain",
-        attachments=[pdf_file]
+        <p>Meter Number: {meter_no}</p>
+
+        <p>Amount: ₹{amount}</p>
+        """
+    }
+
+    response = requests.post(
+        "https://api.brevo.com/v3/smtp/email",
+        headers=headers,
+        json=payload
     )
 
-    fm = FastMail(conf)
-    await fm.send_message(message)
-
+    print(response.status_code)
+    print(response.text)

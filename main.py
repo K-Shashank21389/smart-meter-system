@@ -1099,3 +1099,13 @@ def env_test():
         "username": os.getenv("MAIL_USERNAME"),
         "from": os.getenv("MAIL_FROM")
     }
+
+@app.get("/test-email")
+async def test_email():
+    await send_bill_email(
+        "YOUR_GMAIL@gmail.com",
+        "240069381738",
+        500
+    )
+
+    return {"status": "sent"}
