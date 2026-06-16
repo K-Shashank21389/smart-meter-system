@@ -305,7 +305,41 @@ def get_bill(
 
     verify_token(token)
 
-    pdf_file = f"{meter_no}_bill.pdf"
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT c.name,
+               b.units,
+               b.bill_amount
+        FROM bills b
+        JOIN consumer c
+        ON c.meter_no = b.meter_no
+        WHERE b.meter_no=%s
+        ORDER BY b.id DESC
+        LIMIT 1
+    """, (meter_no,))
+
+    row = cursor.fetchone()
+
+    conn.close()
+
+    if not row:
+        raise HTTPException(
+            status_code=404,
+            detail="Bill not found"
+        )
+
+    name = row[0]
+    units = row[1]
+    amount = row[2]
+
+    pdf_file = generate_pdf(
+        meter_no,
+        name,
+        units,
+        amount
+    )
 
     return FileResponse(
         pdf_file,
@@ -624,6 +658,7 @@ def consumer_history(
     rows = cursor.fetchall()
 
     conn.close()
+
 
     return rows
 
