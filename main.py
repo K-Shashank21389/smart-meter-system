@@ -612,14 +612,14 @@ def consumer_history(
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT bill_date,
-           units,
-           bill_amount,
-           payment_status
-    FROM bills
-    WHERE meter_no=?
-    ORDER BY id DESC
-    """, (meter_no,))
+                   SELECT bill_date,
+                          units,
+                          bill_amount,
+                          payment_status
+                   FROM bills
+                   WHERE meter_no = %s
+                   ORDER BY id DESC
+                   """, (meter_no,))
 
     rows = cursor.fetchall()
 
