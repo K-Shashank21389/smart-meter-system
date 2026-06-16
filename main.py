@@ -1025,3 +1025,31 @@ def init_db():
     conn.close()
 
     return {"status": "success"}
+
+from fastapi.responses import FileResponse
+import os
+
+@app.get("/download-pdf/{filename}")
+def download_pdf(filename: str):
+
+    if not os.path.exists(filename):
+        return {"error": "PDF not found"}
+
+    return FileResponse(
+        filename,
+        media_type="application/pdf",
+        filename=filename
+    )
+
+
+@app.get("/download-qr/{filename}")
+def download_qr(filename: str):
+
+    if not os.path.exists(filename):
+        return {"error": "QR not found"}
+
+    return FileResponse(
+        filename,
+        media_type="image/png",
+        filename=filename
+    )

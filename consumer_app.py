@@ -145,14 +145,23 @@ if st.session_state.token:
     )
 
     if history.status_code == 200:
-
         df = pd.DataFrame(
             history.json(),
-            columns=[
-                "Date",
-                "Units"
-            ]
+            columns=["Date", "Units"]
         )
+
+        df["Date"] = pd.to_datetime(
+            df["Date"],
+            format="mixed",
+            errors="coerce"
+        )
+
+        df = df.dropna()
+
+        df = df.sort_values("Date")
+
+        st.subheader("Usage Data")
+        st.write(df)
 
         fig = px.line(
             df,
