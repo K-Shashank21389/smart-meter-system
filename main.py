@@ -244,14 +244,19 @@ def receive_reading(reading: MeterReading):
         bill["bill_amount"]
     )
 
-    asyncio.run(
-        send_bill_email(
-            email,
-            reading.meter_no,
-            bill["bill_amount"],
-            pdf_file
+    try:
+        asyncio.run(
+            send_bill_email(
+                email,
+                reading.meter_no,
+                bill["bill_amount"],
+                pdf_file
+            )
         )
-    )
+        print("Email sent")
+
+    except Exception as e:
+        print("Email Error:", e)
 
 
     cursor.execute("""
