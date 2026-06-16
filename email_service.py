@@ -37,5 +37,10 @@ async def send_bill_email(
         json=payload
     )
 
-    print(response.status_code)
-    print(response.text)
+    print("Status:", response.status_code)
+    print("Response:", response.text)
+
+    return {
+        "status_code": response.status_code,
+        "response": response.text
+    }

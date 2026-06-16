@@ -1069,9 +1069,8 @@ def env_test():
 @app.get("/test-email")
 async def test_email():
     await send_bill_email(
-        email="shashankkunduru49@gmail.com",
+        email="your_email@gmail.com",
         meter_no="240069381738",
-        amount=250
+        amount=500
     )
-
     return {"status": "sent"}
