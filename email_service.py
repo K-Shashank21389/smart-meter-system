@@ -19,12 +19,18 @@ conf = ConnectionConfig(
     VALIDATE_CERTS=True
 )
 
+
+
 async def send_bill_email(
     email,
     meter_no,
     amount,
     pdf_file
 ):
+    print("MAIL_USERNAME =", os.getenv("MAIL_USERNAME"))
+    print("MAIL_FROM =", os.getenv("MAIL_FROM"))
+    print("PDF FILE =", pdf_file)
+
     message = MessageSchema(
         subject="Electricity Bill",
         recipients=[email],
@@ -40,3 +46,4 @@ Amount: ₹{amount}
 
     fm = FastMail(conf)
     await fm.send_message(message)
+

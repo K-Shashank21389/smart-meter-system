@@ -1092,4 +1092,10 @@ async def test_email():
             "error": str(e)
         }
 
-    
+
+@app.get("/env-test")
+def env_test():
+    return {
+        "username": os.getenv("MAIL_USERNAME"),
+        "from": os.getenv("MAIL_FROM")
+    }
