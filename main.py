@@ -1062,7 +1062,8 @@ from email_service import send_bill_email
 def env_test():
     return {
         "username": os.getenv("MAIL_USERNAME"),
-        "from": os.getenv("MAIL_FROM")
+        "from": os.getenv("MAIL_FROM"),
+        "brevo_key_exists": os.getenv("BREVO_API_KEY") is not None
     }
 
 @app.get("/test-email")
