@@ -1066,22 +1066,20 @@ async def test_email():
         250
     )
 
+    import os
+
+    print("PDF FILE =", pdf_file)
+    print("TYPE =", type(pdf_file))
+    print("EXISTS =", os.path.exists(pdf_file))
+
     try:
 
         await send_bill_email(
             email="yourgmail@gmail.com",
             meter_no="240069381738",
             amount=250,
-            pdf_file=generate_pdf(
-                "240069381738",
-                "Test User",
-                100,
-                250
-            )
+            pdf_file=pdf_file
         )
-
-        print("PDF FILE =", pdf_file)
-        print("TYPE =", type(pdf_file))
 
         return {
             "status": "success",
@@ -1093,3 +1091,5 @@ async def test_email():
         return {
             "error": str(e)
         }
+
+    
