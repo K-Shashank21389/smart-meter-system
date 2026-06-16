@@ -253,10 +253,10 @@ def receive_reading(reading: MeterReading):
                 pdf_file
             )
         )
-        print("Email sent")
+        print("Email sent successfully")
 
     except Exception as e:
-        print("Email Error:", e)
+        print("Email Error:", str(e))
 
 
     cursor.execute("""
