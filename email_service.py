@@ -43,6 +43,9 @@ Please find attached bill PDF.
         attachments=[pdf_file]
     )
 
+    print("MAIL_USERNAME =", os.getenv("MAIL_USERNAME"))
+    print("MAIL_PASSWORD EXISTS =", bool(os.getenv("MAIL_PASSWORD")))
+
     fm = FastMail(conf)
 
     await fm.send_message(message)
