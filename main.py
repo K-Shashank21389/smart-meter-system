@@ -249,9 +249,9 @@ def receive_reading(reading: MeterReading):
             send_bill_email(
                 email,
                 reading.meter_no,
-                bill["bill_amount"],
-                pdf_file
+                bill["bill_amount"]
             )
+
         )
         print("Email sent successfully")
 
@@ -1056,41 +1056,6 @@ def download_qr(filename: str):
 
 from email_service import send_bill_email
 
-@app.get("/test-email")
-async def test_email():
-
-    pdf_file = generate_pdf(
-        "240069381738",
-        "Test User",
-        100,
-        250
-    )
-
-    import os
-
-    print("PDF FILE =", pdf_file)
-    print("TYPE =", type(pdf_file))
-    print("EXISTS =", os.path.exists(pdf_file))
-
-    try:
-
-        await send_bill_email(
-            email="yourgmail@gmail.com",
-            meter_no="240069381738",
-            amount=250,
-            pdf_file=pdf_file
-        )
-
-        return {
-            "status": "success",
-            "pdf": pdf_file
-        }
-
-    except Exception as e:
-
-        return {
-            "error": str(e)
-        }
 
 
 @app.get("/env-test")
@@ -1103,9 +1068,9 @@ def env_test():
 @app.get("/test-email")
 async def test_email():
     await send_bill_email(
-        "YOUR_GMAIL@gmail.com",
-        "240069381738",
-        500
+        email="shashankkunduru49@gmail.com",
+        meter_no="240069381738",
+        amount=250
     )
 
     return {"status": "sent"}
