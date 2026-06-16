@@ -1060,7 +1060,7 @@ from email_service import send_bill_email
 async def test_email():
 
     await send_bill_email(
-        email="shashankkunduru13@gmail.com",
+        email="shashankkunduru49@gmail.com",
         meter_no="240069381738",
         amount=100,
         pdf_file="240069381738_bill.pdf"
